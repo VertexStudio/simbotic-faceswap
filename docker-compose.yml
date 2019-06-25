@@ -1,0 +1,33 @@
+version: "2.4"
+services:
+  simbotic-faceswap:
+    tty: true
+    stdin_open: true
+    runtime: nvidia
+    container_name: simbotic-faceswap
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - USER_ID
+        - GROUP_ID
+      network: host
+    network_mode: host
+    devices:
+      - "/dev/video0:/dev/video0"
+    image: simbotic-faceswap/gpu:v0.0.1
+    environment:
+      - DISPLAY
+    privileged: true
+    cap_add:
+      - SYS_PTRACE
+    volumes:
+      - type: bind
+        source: /tmp/.X11-unix
+        target: /tmp/.X11-unix
+      - type: bind
+        source: ${CURRENT_DIRECTORY}/videos/
+        target: /videos
+      - type: bind
+        source: ${CURRENT_DIRECTORY}/data/
+        target: /data

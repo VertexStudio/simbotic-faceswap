@@ -1,0 +1,6 @@
+.env
+/videos
+/data
+/.vscode/*
+/lib
+/playground
