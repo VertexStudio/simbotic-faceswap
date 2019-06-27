@@ -1,32 +1,37 @@
 # Base Ubuntu 
 ARG UBUNTU_VERSION=18.04
 # Nvidia CUDA and Deep Neuronal Networks libraries
-#FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu${UBUNTU_VERSION} as base
-FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu${UBUNTU_VERSION} as base
+# FROM ubuntu:18.04
+FROM nvidia/cuda:10.0-devel-ubuntu${UBUNTU_VERSION} as base
+# FROM nvidia/cuda:9.2-cudnn7-devel-ubuntu16.04
+# FROM tensorflow/tensorflow:1.13.1-gpu as base   
 # For Building on Python and related
 ENV LANG C.UTF-8
+
+# Cudnn library
+# 7.4.1.5
+#ENV CUDNN_VERSION 7.4.2.24
+#ENV CUDNN_VERSION 7.4.1.5
+ENV CUDNN_VERSION 7.6.0.64
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+            libcudnn7=$CUDNN_VERSION-1+cuda10.0 \
+            libcudnn7-dev=$CUDNN_VERSION-1+cuda10.0 && \
+    apt-mark hold libcudnn7 && \
+    rm -rf /var/lib/apt/lists/*
+
 
 # Development dependencies
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    python3-pip git g++ wget make python3-tk sudo ffmpeg python3-setuptools
+    python3-pip git g++ wget make python3-tk sudo ffmpeg python3-setuptools python3-dev curl
+    #python3.7-dev python3.7 libpython3.7-dev
 
 #Upgrade pip
 RUN pip3 install --upgrade pip
 
-# Numpy stack and opencv for python and faceswap requirements
-#RUN pip3 install opencv-python tqdm psutil pathlib numpy==1.16.2 opencv-python scikit-image \
-#    Pillow scikit-learn toposort fastcluster matplotlib==2.2.2 imageio==2.5.0 imageio-ffmpeg \
-#    ffmpy==0.2.2 nvidia-ml-py3 h5py==2.9.0 Keras==2.2.4
-
 # X Server and related
-RUN apt-get update && apt-get install -y x11-xserver-utils
-
-# patch for tensorflow:latest-gpu-py3 image
-# RUN cd /usr/local/cuda/lib64 \
-# && mv stubs/libcuda.so ./ \
-# && ln -s libcuda.so libcuda.so.1 \
-# && ldconfig
+RUN apt-get update && apt-get install -y x11-xserver-utils wget gedit sudo git gcc g++ python3-dev
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
@@ -37,7 +42,6 @@ RUN groupadd -g ${GROUP_ID} sim && \
     echo "sim:sim" | chpasswd && adduser sim sudo && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-# Wheel tf
 ENV HOME /home/sim
 ENV SIM_ROOT=$HOME
 
@@ -47,7 +51,14 @@ USER sim
 
 WORKDIR $HOME
 
+#RUN wget https://repo.continuum.io/miniconda/Miniconda2-4.5.12-Linux-x86_64.sh
+
 # FaceSwap repo
 RUN git clone https://github.com/deepfakes/faceswap.git
 
 WORKDIR $HOME/faceswap
+
+RUN sudo pip3 install -r requirements.txt
+
+# Tensorflow
+RUN sudo pip3 install tensorflow-gpu==1.13.1
