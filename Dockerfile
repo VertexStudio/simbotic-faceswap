@@ -14,7 +14,7 @@ ENV LANG C.UTF-8
 # #ENV CUDNN_VERSION 7.5.0.56 *
 # #ENV CUDNN_VERSION 7.4.2.24 * 
 # ENV CUDNN_VERSION 7.4.1.5
-# # It worked for cuda 9 and tf 1.12
+# # It worked for cuda 9 and tf 1.12 for Turing and Volta architectures
 ENV CUDNN_VERSION 7.3.1.20 
 # #ENV CUDNN_VERSION 7.3.0.29
 

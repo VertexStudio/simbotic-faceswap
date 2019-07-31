@@ -1,0 +1,1 @@
+docker exec -ti simbotic-faceswap python3 faceswap.py gui
