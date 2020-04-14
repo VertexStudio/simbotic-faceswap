@@ -48,14 +48,16 @@ Now we are ready to proceed
 
 # Build and Running
 
-Execute the setup.sh 
-```
-./setup.sh
-```
 Clone the repo
 ```
 git clone git@github.com:VertexStudio/simbotic-faceswap.git
 ```
+
+Execute the setup.sh 
+```
+./setup.sh
+```
+
 
 Inside the recent clone repo type:
 

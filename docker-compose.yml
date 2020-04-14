@@ -18,6 +18,8 @@ services:
     image: simbotic-faceswap/gpu:v0.0.1
     environment:
       - DISPLAY
+      - TZ=America/El_Salvador
+      - DEBIAN_FRONTEND=noninteractive
     privileged: true
     cap_add:
       - SYS_PTRACE
