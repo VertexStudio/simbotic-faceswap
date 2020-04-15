@@ -1,0 +1,1 @@
+docker exec -ti simbotic-faceswap python faceswap.py extract -i $1 -o $2
